@@ -12,19 +12,20 @@ class Minesweeper:
         self.mines = set(random.sample(range(width * height), mines))
         self.field = [[' ' for _ in range(width)] for _ in range(height)]
         self.revealed = [[False for _ in range(width)] for _ in range(height)]
+        self.game_over = False
 
     def print_board(self, reveal=False):
         clear_screen()
-        print('  ' + ' '.join(str(i + 1) for i in range(self.width)))  # Indices des colonnes commencent à 1
+        print('   ' + ' '.join(f'{i:2}' for i in range(self.width)))
         for y in range(self.height):
-            print(y + 1, end=' ')  # Indices des lignes commencent à 1
+            print(f'{y:2} ', end=' ')
             for x in range(self.width):
                 if reveal or self.revealed[y][x]:
                     if (y * self.width + x) in self.mines:
                         print('*', end=' ')
                     else:
                         count = self.count_mines_nearby(x, y)
-                        print(count if count > 0 else ' ', end=' ')
+                        print(f'{count:2}' if count > 0 else ' ', end=' ')
                 else:
                     print('.', end=' ')
             print()
@@ -40,38 +41,41 @@ class Minesweeper:
         return count
 
     def reveal(self, x, y):
-        # Vérification si les coordonnées sont dans les limites de la grille
-        if not (0 <= x < self.width and 0 <= y < self.height):
-            print("Coordonnées en dehors des limites.")
-            return True  # Continuer le jeu
-
         if (y * self.width + x) in self.mines:
-            return False  # Mine touchée
-
+            self.game_over = True
+            return False
         if self.revealed[y][x]:
-            return True  # Case déjà révélée
+            return True
 
         self.revealed[y][x] = True
         if self.count_mines_nearby(x, y) == 0:
-            for dx in [-1, 0, 1]:
-                for dy in [-1, 0, 1]:
-                    nx, ny = x + dx, y + dy
-                    if 0 <= nx < self.width and 0 <= ny < self.height and not self.revealed[ny][nx]:
-                        self.reveal(nx, ny)
+            to_reveal = [(x, y)]
+            while to_reveal:
+                cx, cy = to_reveal.pop()
+                for dx in [-1, 0, 1]:
+                    for dy in [-1, 0, 1]:
+                        nx, ny = cx + dx, cy + dy
+                        if 0 <= nx < self.width and 0 <= ny < self.height and not self.revealed[ny][nx]:
+                            self.revealed[ny][nx] = True
+                            if self.count_mines_nearby(nx, ny) == 0:
+                                to_reveal.append((nx, ny))
         return True
 
     def play(self):
-        while True:
+        while not self.game_over:
             self.print_board()
             try:
-                x = int(input("Entrez la coordonnée x (colonne): ")) - 1
-                y = int(input("Entrez la coordonnée y (ligne): ")) - 1
+                x = int(input(f"Enter x coordinate (0 to {self.width - 1}): "))
+                y = int(input(f"Enter y coordinate (0 to {self.height - 1}): "))
+                if x < 0 or x >= self.width or y < 0 or y >= self.height:
+                    print("Coordinates out of range. Please try again.")
+                    continue
                 if not self.reveal(x, y):
                     self.print_board(reveal=True)
-                    print("Game Over! Vous avez touché une mine.")
+                    print("Game Over! You hit a mine.")
                     break
             except ValueError:
-                print("Entrée invalide. Veuillez entrer des nombres seulement.")
+                print("Invalid input. Please enter numbers only.")
 
 if __name__ == "__main__":
     game = Minesweeper()
