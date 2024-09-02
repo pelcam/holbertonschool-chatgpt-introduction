@@ -1,1 +1,1 @@
-# holbertonschool-chatgpt-introduction
+Learning the usage of ia to debbug and automatize code, with Holberton School
