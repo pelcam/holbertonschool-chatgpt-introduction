@@ -15,9 +15,9 @@ class Minesweeper:
 
     def print_board(self, reveal=False):
         clear_screen()
-        print('  ' + ' '.join(str(i + 1) for i in range(self.width)))  # Indices des colonnes commencent à 1
+        print('  ' + ' '.join(str(i) for i in range(self.width)))
         for y in range(self.height):
-            print(y + 1, end=' ')  # Indices des lignes commencent à 1
+            print(y, end=' ')
             for x in range(self.width):
                 if reveal or self.revealed[y][x]:
                     if (y * self.width + x) in self.mines:
@@ -40,17 +40,8 @@ class Minesweeper:
         return count
 
     def reveal(self, x, y):
-        # Vérification si les coordonnées sont dans les limites de la grille
-        if not (0 <= x < self.width and 0 <= y < self.height):
-            print("Coordonnées en dehors des limites.")
-            return True  # Continuer le jeu
-
         if (y * self.width + x) in self.mines:
-            return False  # Mine touchée
-
-        if self.revealed[y][x]:
-            return True  # Case déjà révélée
-
+            return False
         self.revealed[y][x] = True
         if self.count_mines_nearby(x, y) == 0:
             for dx in [-1, 0, 1]:
@@ -64,14 +55,14 @@ class Minesweeper:
         while True:
             self.print_board()
             try:
-                x = int(input("Entrez la coordonnée x (colonne): ")) - 1
-                y = int(input("Entrez la coordonnée y (ligne): ")) - 1
+                x = int(input("Enter x coordinate: "))
+                y = int(input("Enter y coordinate: "))
                 if not self.reveal(x, y):
                     self.print_board(reveal=True)
-                    print("Game Over! Vous avez touché une mine.")
+                    print("Game Over! You hit a mine.")
                     break
             except ValueError:
-                print("Entrée invalide. Veuillez entrer des nombres seulement.")
+                print("Invalid input. Please enter numbers only.")
 
 if __name__ == "__main__":
     game = Minesweeper()
