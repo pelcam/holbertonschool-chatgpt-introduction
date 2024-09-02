@@ -9,11 +9,17 @@
         font-family: Arial, sans-serif;
         text-align: center;
         padding-top: 50px;
+        transition: background-color 0.5s ease; /* Smooth transition for color change */
     }
     button {
         padding: 10px 20px;
         font-size: 16px;
         cursor: pointer;
+        margin-top: 20px;
+    }
+    #colorCode {
+        font-size: 18px;
+        margin-top: 20px;
     }
 </style>
 </head>
@@ -21,18 +27,22 @@
 
 <h2>Click the button to change the background color</h2>
 
-<button id="colorButton">Change Color</button> <!-- Corrected the typo here -->
+<button id="colorButton">Change Color</button>
+<p id="colorCode"></p> <!-- Display the current color -->
 
 <script>
-    document.getElementById("colorButton").addEventListener("click", function() {
-        changeBackgroundColor();
-    });
+    const button = document.getElementById("colorButton");
+    const colorCodeDisplay = document.getElementById("colorCode");
+
+    button.addEventListener("click", changeBackgroundColor);
 
     function changeBackgroundColor() {
         // Generate a random color
-        var randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+        const randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
         // Change the background color of the body
         document.body.style.backgroundColor = randomColor;
+        // Display the current color code
+        colorCodeDisplay.textContent = `Current Background Color: ${randomColor}`;
     }
 </script>
 
