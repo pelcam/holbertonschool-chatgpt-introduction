@@ -1,26 +1,30 @@
+#!/usr/bin/python3
 def print_board(board):
     """Prints the current state of the game board."""
     for row in board:
         print(" | ".join(row))
-        print("-" * 5)
+        print("-" * 11)
 
 def check_winner(board):
-    """Checks if there is a winner on the board."""
+    """Checks if there is a winner on the board and returns the winner ('X' or 'O')."""
+    # Check rows for a winner
     for row in board:
         if row.count(row[0]) == len(row) and row[0] != " ":
-            return True
+            return row[0]
 
+    # Check columns for a winner
     for col in range(len(board[0])):
         if board[0][col] == board[1][col] == board[2][col] and board[0][col] != " ":
-            return True
+            return board[0][col]
 
+    # Check diagonals for a winner
     if board[0][0] == board[1][1] == board[2][2] and board[0][0] != " ":
-        return True
-
+        return board[0][0]
     if board[0][2] == board[1][1] == board[2][0] and board[0][2] != " ":
-        return True
+        return board[0][2]
 
-    return False
+    # No winner
+    return None
 
 def check_draw(board):
     """Checks if the game is a draw."""
@@ -48,9 +52,10 @@ def tic_tac_toe():
 
         if board[row][col] == " ":
             board[row][col] = player
-            if check_winner(board):
+            winner = check_winner(board)
+            if winner:
                 print_board(board)
-                print(f"Player {player} wins!")
+                print(f"Player {winner} wins!")
                 break
             elif check_draw(board):
                 print_board(board)
@@ -61,4 +66,3 @@ def tic_tac_toe():
             print("That spot is already taken! Try again.")
 
 tic_tac_toe()
-
